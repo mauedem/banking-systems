@@ -54,7 +54,6 @@ const actions = {
         const opEntryListByAcctPos = rootState.opentry.opEntryList.filter(
             opEntry => opEntry.AcctCr === payload.Acct || opEntry.AcctDB === payload.Acct
         )
-        console.log('opEntryListByAcctPos = ',opEntryListByAcctPos)
         commit('SET_OPENTRY_LIST_BY_ACCT_POS', opEntryListByAcctPos)
     },
 
@@ -68,7 +67,6 @@ const actions = {
             }
         });
         commit('SET_SELECTED_OP_DATE', lastOpDate.id)
-        console.log('lastOpDate.id = ', lastOpDate.id)
     },
 
     async updateAcct({ state, commit, dispatch, rootState }) {
@@ -324,7 +322,6 @@ const mutations = {
 
     SET_SELECTED_OP_DATE(state, payload) {
         state.selectedOpDate = payload
-        console.log('state.selectedOpDate = ', state.selectedOpDate)
     },
 
     SET_OPENTRY_LIST_BY_ACCT_POS(state, payload) {

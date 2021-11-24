@@ -6,7 +6,7 @@
                 :key="index"
                 :active="activeItem === route.name"
             >
-                <b-link :to="{ name: route.name }" class="nav-link">
+                <b-link @click="goToRoute(route.name)" class="nav-link">
                     {{ route.title }}
                 </b-link>
             </b-nav-item>
@@ -38,6 +38,22 @@ export default {
     computed: {
         activeItem () {
             return this.$route.name;
+        }
+    },
+
+    methods: {
+        goToRoute(routeName) {
+            const selectedAcctPosRow = this.$store.getters['acct/selectedAcctPosRow']
+            const acctSelectedOpEntryRow = this.$store.getters['acct/selectedOpEntryRow']
+            const selectedOpDateRow = this.$store.getters['opdate/selectedOpDateRow']
+            const opdateSelectedOpEntryRow = this.$store.getters['opdate/selectedOpEntryRow']
+
+            if (selectedAcctPosRow?.edit_mode || acctSelectedOpEntryRow?.edit_mode ||
+                selectedOpDateRow?.edit_mode || opdateSelectedOpEntryRow?.edit_mode) return
+
+            if (this.activeItem === routeName) return;
+
+            this.$router.push({ name: routeName })
         }
     }
 }
