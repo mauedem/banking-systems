@@ -64,28 +64,19 @@ const actions = {
         delete data.edit_mode
         delete data.id
 
-        // TODO wtf? оптимизируй
         const createdOpDate = await OpdateAPI.createOpDate(data)
-        commit('SET_SELECTED_OPDATE_ROW', {
-            ...createdOpDate,
-            edit_mode: true
-        })
-        commit('SET_OP_DATE_LIST', [{ ...state.selectedOpDateRow }, ...state.opDateList])
 
         // Заменяем поле создания уже созданным экземпляром
-        // const opDateListWithNewRow = [
-        //     {
-        //         ...createdOpDate,
-        //         edit_mode: true
-        //     },
-        //     ...state.opDateList
-        // ]
-
-        const opDateListWithNewRow = [...state.opDateList]
+        const opDateListWithNewRow = [
+            {
+                ...createdOpDate,
+                edit_mode: true
+            },
+            ...state.opDateList
+        ]
         opDateListWithNewRow.splice(1, 1)
         commit('SET_OP_DATE_LIST', opDateListWithNewRow)
 
-        // await dispatch('getOpEntryList', null, { root: true })
         await dispatch('getOpEntryListByOpDate', createdOpDate)
 
         commit('SET_SELECTED_OPDATE_ROW', {
@@ -155,13 +146,14 @@ const actions = {
         delete data.id
 
         const createdOpEntry = await OpEntryAPI.createOpEntry(data)
-        commit('SET_SELECTED_OPENTRY_ROW', {
-            ...createdOpEntry,
-            edit_mode: true
-        })
-        commit('SET_OPENTRY_LIST_BY_OPDATE', [{ ...state.selectedOpEntryRow }, ...state.opEntryListByOpdate])
 
-        const opEntryListWithNewRow = [...state.opEntryListByOpdate]
+        const opEntryListWithNewRow = [
+            {
+                ...createdOpEntry,
+                edit_mode: true
+            },
+            ...state.opEntryListByOpdate
+        ]
         opEntryListWithNewRow.splice(1, 1)
         commit('SET_OPENTRY_LIST_BY_OPDATE', opEntryListWithNewRow)
 

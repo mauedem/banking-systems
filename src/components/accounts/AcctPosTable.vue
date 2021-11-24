@@ -87,11 +87,12 @@ export default {
 
     computed: {
         ...mapGetters('opdate', ['opDateList']),
-        ...mapGetters('acct', ['acctPosList', 'selectedAcctPosRow', 'selectedOpDate', 'selectedOpEntryRow']),
+        ...mapGetters('acct', ['acctPosList', 'selectedAcctPosRow', 'selectedOpEntryRow']),
 
         selectedOpDate: {
             get () {
                 const selectedOpDate = this.$store.getters['acct/selectedOpDate']
+                console.log('selectedOpDate = ', selectedOpDate)
 
                 return selectedOpDate?.id ?? selectedOpDate
             },

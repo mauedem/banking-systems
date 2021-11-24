@@ -28,13 +28,16 @@ const getters = {
 }
 
 const actions = {
-    async getAcctList({ commit }) {
-        const acctList = await AcctAPI.getAcctList()
-        commit('SET_ACCT_LIST', acctList)
+    getAcctList: {
+        root: true,
+        async handler({ commit }) {
+            const acctList = await AcctAPI.getAcctList()
+            commit('SET_ACCT_LIST', acctList)
+        }
     },
 
     getAcctPosListByOpDate({ state, commit, rootState }) {
-        const selectedOpDate = rootState.opdate.opDateList[state.selectedOpDate - 1]
+        const selectedOpDate = rootState.opdate.opDateList.find(opDate => opDate.id === state.selectedOpDate)
 
         const opEntryListByOpDate = rootState.opentry.opEntryList.filter(
             opEntry => opEntry.OpDate === selectedOpDate.OpDate
@@ -67,6 +70,7 @@ const actions = {
             }
         });
         commit('SET_SELECTED_OP_DATE', lastOpDate.id)
+        console.log('lastOpDate.id = ', lastOpDate.id)
     },
 
     async updateAcct({ state, commit, dispatch, rootState }) {
@@ -161,26 +165,27 @@ const actions = {
         delete data.id
 
         const createdAcct = await AcctAPI.createAcct(data)
-        commit('SET_SELECTED_ACCT_POS_ROW', {
-            ...createdAcct,
-            edit_mode: true
-        })
-        commit('SET_ACCT_POS_LIST', [{ ...state.selectedAcctPosRow }, ...state.acctPosList])
 
         // Создаем проводку на этот счет и дату, чтобы созданный нами счет появился в списке
         // AcctPosList после обновления страницы
-        dispatch('getOpEntryListByAcctPos', createdAcct.Acct)
+        await dispatch('getOpEntryListByAcctPos', createdAcct.Acct)
 
         if (!state.opEntryListByAcctPos.length) {
             await OpEntryAPI.createOpEntry({
                 "AcctCr": "",
                 "AcctDB": createdAcct.Acct,
                 "Amount": 0,
-                "OpDate": rootState.opdate.opDateList[state.selectedOpDate - 1].OpDate
+                "OpDate": rootState.opdate.opDateList.find(opDate => opDate.id === state.selectedOpDate).OpDate
             })
         }
 
-        const acctPosListWithNewRow = [...state.acctPosList]
+        const acctPosListWithNewRow =  [
+            {
+                ...createdAcct,
+                edit_mode: true
+            },
+            ...state.acctPosList
+        ]
         acctPosListWithNewRow.splice(1, 1)
         commit('SET_ACCT_POS_LIST', acctPosListWithNewRow)
 
@@ -252,8 +257,8 @@ const actions = {
         opEntryListWithEmptyRow.unshift({
             AcctCr: '',
             AcctDB: '',
-            Amount: '',
-            OpDate: 0,
+            Amount: 0,
+            OpDate: '',
             edit_mode: true,
             creatable: true
         });
@@ -268,13 +273,15 @@ const actions = {
         delete data.id
 
         const createdOpEntry = await OpEntryAPI.createOpEntry(data)
-        commit('SET_SELECTED_OPENTRY_ROW', {
-            ...createdOpEntry,
-            edit_mode: true
-        })
-        commit('SET_OPENTRY_LIST_BY_ACCT_POS', [{ ...state.selectedOpEntryRow }, ...state.opEntryListByAcctPos])
 
-        const opEntryListWithNewRow = [...state.opEntryListByAcctPos]
+
+        const opEntryListWithNewRow = [
+            {
+                ...createdOpEntry,
+                edit_mode: true
+            },
+            ...state.opEntryListByAcctPos
+        ]
         opEntryListWithNewRow.splice(1, 1)
         commit('SET_OPENTRY_LIST_BY_ACCT_POS', opEntryListWithNewRow)
 

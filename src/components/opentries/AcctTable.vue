@@ -15,7 +15,7 @@
             <b-form-input
                 v-if="selectedAcctRow && selectedAcctRow.id === data.item.id &&
                     selectedAcctRow.edit_mode"
-                style="width: 250px"
+                class="acct-table__type"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
             />
@@ -27,7 +27,7 @@
             <b-form-input
                 v-if="selectedAcctRow && selectedAcctRow.id === data.item.id &&
                     selectedAcctRow.edit_mode"
-                style="width: 250px"
+                class="acct-table__acct"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
             />
@@ -39,7 +39,7 @@
             <b-form-input
                 v-if="selectedAcctRow && selectedAcctRow.id === data.item.id &&
                     selectedAcctRow.edit_mode"
-                style="width: 100px"
+                class="acct-table__ost"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
             />
@@ -59,7 +59,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-    name: "AcctPosTable", // Табличная форма "Счета проводок"
+    name: "AcctTable", // Табличная форма "Счета проводок"
 
     data: () => ({
         fields: [

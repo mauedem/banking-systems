@@ -9,8 +9,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     modules: {
-        acct: acct,
-        opdate: opdate,
+        acct,
+        opdate,
         opentry
     }
 })

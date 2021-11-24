@@ -16,7 +16,7 @@
             <b-form-input
                 v-if="selectedOpEntryRow && selectedOpEntryRow.id === data.item.id &&
                     selectedOpEntryRow.edit_mode"
-                style="width: 250px"
+                class="opentry-table__opdate"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
             />
@@ -28,7 +28,7 @@
             <b-form-input
                 v-if="selectedOpEntryRow && selectedOpEntryRow.id === data.item.id &&
                     selectedOpEntryRow.edit_mode"
-                style="width: 250px"
+                class="opentry-table__acct"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
             />
@@ -45,7 +45,7 @@
             <b-form-input
                 v-if="selectedOpEntryRow && selectedOpEntryRow.id === data.item.id &&
                     selectedOpEntryRow.edit_mode"
-                style="width: 250px"
+                class="opentry-table__acct"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
             />
@@ -62,7 +62,7 @@
             <b-form-input
                 v-if="selectedOpEntryRow && selectedOpEntryRow.id === data.item.id &&
                     selectedOpEntryRow.edit_mode"
-                style="width: 250px"
+                class="opentry-table__amount"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
             />

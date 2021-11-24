@@ -16,7 +16,7 @@
             </b-col>
 
             <b-col cols="4">
-                <AcctPosTable class="acctpos-table" />
+                <AcctTable class="acctpos-table" />
 
                 <!-- Прячем кнопочку "Добавить запись" и "Удалить",
                  потому что в этой таблице может быть только 2 записи -->
@@ -36,7 +36,7 @@
 
 <script>
 import OpEntryTable from "@/components/opentries/OpEntryTable";
-import AcctPosTable from "@/components/opentries/AcctPosTable";
+import AcctTable from "@/components/opentries/AcctTable";
 import TableActions from "@/components/common/TableActions";
 import { mapGetters } from "vuex";
 
@@ -45,7 +45,7 @@ export default {
 
     components: {
         OpEntryTable,
-        AcctPosTable,
+        AcctTable,
         TableActions
     },
 

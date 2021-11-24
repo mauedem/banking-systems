@@ -1,5 +1,5 @@
 import { OpEntryAPI } from '@/api/opentry';
-import {AcctAPI} from "@/api/acct";
+import { AcctAPI } from "@/api/acct";
 
 const state = {
     /* Данные к таблице операций */
@@ -102,21 +102,34 @@ const actions = {
         commit('SET_UPDATED_OPENTRY_ROW', null)
     },
 
-    async createOpEntry({ state, commit }) {
+    async createOpEntry({ state, commit, dispatch }) {
         const data = { ...state.updatedOpEntryRow}
         delete data.edit_mode
         delete data.id
 
         const createdOpEntry = await OpEntryAPI.createOpEntry(data)
-        commit('SET_SELECTED_OPENTRY_ROW', {
-            ...createdOpEntry,
-            edit_mode: true
-        })
-        commit('SET_OPENTRY_LIST', [{ ...state.selectedOpEntryRow }, ...state.opEntryList])
 
-        const opEntryListWithNewRow = [...state.opEntryList]
+        const opEntryListWithNewRow = [
+            {
+                ...createdOpEntry,
+                edit_mode: true
+            },
+            ...state.opEntryList
+        ]
         opEntryListWithNewRow.splice(1, 1)
         commit('SET_OPENTRY_LIST', opEntryListWithNewRow)
+
+        await AcctAPI.createAcct({
+            Acct: createdOpEntry.AcctDB,
+            Ost: 0
+        })
+        await AcctAPI.createAcct({
+            Acct: createdOpEntry.AcctCr,
+            Ost: 0
+        })
+
+        await dispatch('getAcctList', null, { root: true })
+        dispatch('getAcctsListByOpEntry')
 
         commit('SET_SELECTED_OPENTRY_ROW', {
             ...createdOpEntry,
@@ -204,6 +217,7 @@ const mutations = {
 
     SET_SELECTED_ACCT_ROW(state, payload) {
         state.selectedAcctRow = payload
+        console.log('state.selectedAcctRow = ', state.selectedAcctRow)
     },
 
     SET_UPDATED_ACCT_ROW(state, payload) {
