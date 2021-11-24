@@ -66,7 +66,7 @@
 
         <template #empty>
             <div class="text-center">
-                {{ !selectedOpDateRow ? 'Дата не выбрана' : 'Нет данных' }}
+                {{ !selectedOpDateRow ? 'Дата не выбрана' : 'Нет проводок на выбранный день' }}
             </div>
         </template>
     </b-table>

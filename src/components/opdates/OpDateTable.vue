@@ -8,6 +8,7 @@
         sticky-header
         :fields="fields"
         :items="opDateList"
+        show-empty
         @row-selected="selectRow"
     >
         <template #cell(OpDate)="data">
@@ -20,6 +21,12 @@
             />
 
             <div v-else>{{ data.value }}</div>
+        </template>
+
+        <template #empty>
+            <div class="text-center">
+                День не выбран
+            </div>
         </template>
     </b-table>
 </template>

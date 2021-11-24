@@ -72,7 +72,7 @@
 
         <template #empty>
             <div class="text-center">
-                {{ !selectedAcctPosRow ? 'Счет не выбран' : 'Нет данных' }}
+                {{ !selectedAcctPosRow ? 'Счет не выбран' : 'Нет проводок на выбранный счет' }}
             </div>
         </template>
     </b-table>

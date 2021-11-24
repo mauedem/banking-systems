@@ -48,7 +48,7 @@
 
         <template #empty>
             <div class="text-center">
-                Нет данных
+                Нет счетов на этот день
             </div>
         </template>
     </b-table>
