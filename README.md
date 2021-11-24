@@ -2,22 +2,11 @@
 
 ## Project setup
 ```
-npm install
-```
+Для запуска приложения:
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
+Склонировать репозиторий
+Установить зависимости (npm install)
+Запустить приложение командой npm start (запускает server на порте 3000, и запускает фронтенд)
 ```
 
 ### Customize configuration
