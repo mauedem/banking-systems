@@ -149,7 +149,7 @@ const actions = {
         commit('SET_UPDATED_OPDATE_ROW', null)
     },
 
-    async createOpEntry({ state, commit, dispatch }) {
+    async createOpEntry({ state, commit }) {
         const data = { ...state.updatedOpEntryRow}
         delete data.edit_mode
         delete data.id
@@ -164,8 +164,6 @@ const actions = {
         const opEntryListWithNewRow = [...state.opEntryListByOpdate]
         opEntryListWithNewRow.splice(1, 1)
         commit('SET_OPENTRY_LIST_BY_OPDATE', opEntryListWithNewRow)
-
-        await dispatch('getOpEntryList', null, { root: true })
 
         commit('SET_SELECTED_OPENTRY_ROW', {
             ...createdOpEntry,
@@ -224,8 +222,8 @@ const actions = {
         opEntryListWithEmptyRow.unshift({
             AcctCr: '',
             AcctDB: '',
-            Amount: '',
-            OpDate: 0,
+            Amount: 0,
+            OpDate: '',
             edit_mode: true,
             creatable: true
         });

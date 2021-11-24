@@ -197,9 +197,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.acctpos-table, .opentry-table {
-    height: 80vh;
-}
-</style>

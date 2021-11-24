@@ -31,3 +31,13 @@ export default {
     }
 };
 </script>
+
+<style>
+.opentry-table, .acctpos-table, .opdate-table {
+    height: 80vh !important;
+}
+
+.b-table-sticky-header {
+    max-height: 100% !important;
+}
+</style>

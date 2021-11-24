@@ -1,31 +1,32 @@
 <template>
     <b-table
         ref="AcctPosTable"
-        caption="Счета с остатками на дату"
+        caption="Счета проводок"
         caption-top
         :selectable="isTableSelectable"
         select-mode="single"
         sticky-header
         show-empty
         :fields="fields"
-        :items="acctPosList"
+        :items="acctListByOpEntry"
         @row-selected="selectRow"
     >
-        <template #thead-top>
-            <div style="width: 140px">
-                <b-form-select
-                    v-model="selectedOpDate"
-                    :options="opDateList"
-                    text-field="OpDate"
-                    value-field="id"
-                />
-            </div>
+        <template #cell(Type)="data">
+            <b-form-input
+                v-if="selectedAcctRow && selectedAcctRow.id === data.item.id &&
+                    selectedAcctRow.edit_mode"
+                style="width: 250px"
+                :value="data.value"
+                @input="(value) => inputHandler(value, data.field.key)"
+            />
+
+            <div v-else>{{ data.value }}</div>
         </template>
 
         <template #cell(Acct)="data">
             <b-form-input
-                v-if="selectedAcctPosRow && selectedAcctPosRow.id === data.item.id &&
-                    selectedAcctPosRow.edit_mode"
+                v-if="selectedAcctRow && selectedAcctRow.id === data.item.id &&
+                    selectedAcctRow.edit_mode"
                 style="width: 250px"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
@@ -36,8 +37,8 @@
 
         <template #cell(Ost)="data">
             <b-form-input
-                v-if="selectedAcctPosRow && selectedAcctPosRow.id === data.item.id &&
-                    selectedAcctPosRow.edit_mode"
+                v-if="selectedAcctRow && selectedAcctRow.id === data.item.id &&
+                    selectedAcctRow.edit_mode"
                 style="width: 100px"
                 :value="data.value"
                 @input="(value) => inputHandler(value, data.field.key)"
@@ -48,7 +49,7 @@
 
         <template #empty>
             <div class="text-center">
-                Нет счетов на этот день
+                {{ !selectedOpEntryRow ? 'Операция не выбрана' : 'Нет счетов на выбранную операцию' }}
             </div>
         </template>
     </b-table>
@@ -58,10 +59,14 @@
 import { mapGetters } from 'vuex'
 
 export default {
-    name: "AcctPosTable", // Табличная форма "Счета с остатками на дату"
+    name: "AcctPosTable", // Табличная форма "Счета проводок"
 
     data: () => ({
         fields: [
+            {
+                key: 'Type',
+                label: 'Тип счета'
+            },
             {
                 key: 'Acct',
                 label: 'Номер счета'
@@ -76,7 +81,7 @@ export default {
     }),
 
     watch: {
-        selectedAcctPosRow(value) {
+        selectedAcctRow(value) {
             this.isTableSelectable = !value || value && !value.edit_mode
 
             if (value) {
@@ -86,29 +91,16 @@ export default {
     },
 
     computed: {
-        ...mapGetters('opdate', ['opDateList']),
-        ...mapGetters('acct', ['acctPosList', 'selectedAcctPosRow', 'selectedOpDate', 'selectedOpEntryRow']),
-
-        selectedOpDate: {
-            get () {
-                const selectedOpDate = this.$store.getters['acct/selectedOpDate']
-
-                return selectedOpDate?.id ?? selectedOpDate
-            },
-
-            set (value) {
-                const selectedOpDate = this.$store.getters['acct/selectedOpDate']
-
-                if (selectedOpDate === value) return
-
-                this.$store.dispatch('acct/setSelectedOpDate', value)
-            }
-        }
+        ...mapGetters('opentry', [
+            'acctListByOpEntry',
+            'selectedAcctRow',
+            'selectedOpEntryRow'
+        ])
     },
 
     mounted() {
-        if (this.selectedAcctPosRow) {
-            const selectedRowIdx = this.acctPosList.findIndex(accPos => accPos.id === this.selectedAcctPosRow.id)
+        if (this.selectedAcctRow) {
+            const selectedRowIdx = this.acctListByOpEntry.findIndex(accPos => accPos.id === this.selectedAcctRow.id)
 
             this.$refs.AcctPosTable.selectRow(selectedRowIdx)
         }
@@ -116,39 +108,37 @@ export default {
 
     methods: {
         selectRow(rowData) {
-            if (this.selectedAcctPosRow?.edit_mode) return
+            if (this.selectedAcctRow?.edit_mode) return
 
             if (!rowData.length) {
-                this.$store.dispatch('acct/setSelectedAcctPosRow', null)
-                this.$store.dispatch('acct/setOpEntryListByAcctPos', [])
+                this.$store.dispatch('opentry/setSelectedAcctRow', null)
 
                 return
             }
 
-            this.$store.dispatch('acct/setSelectedAcctPosRow', {
+            this.$store.dispatch('opentry/setSelectedAcctRow', {
                 ...rowData[0],
                 edit_mode: false
             })
-            this.$store.dispatch('acct/getOpEntryListByAcctPos', rowData[0])
         },
 
         inputHandler(value, key) {
-            const updatedAcctPosRow = this.$store.getters['acct/updatedAcctPosRow']
+            const updatedAcctRow = this.$store.getters['opentry/updatedAcctRow']
 
             const typedValue = key === 'Ost' ? Number(value) : value
-            this.$store.dispatch('acct/setUpdatedAcctPosRow', {
-                ...updatedAcctPosRow,
+            this.$store.dispatch('opentry/setUpdatedAcctRow', {
+                ...updatedAcctRow,
                 [key]: typedValue
             })
         },
 
         async selectTableRow(value) {
             if (!this.isTableSelectable) return
-            if (!this.selectedAcctPosRow) return
+            if (!this.selectedAcctRow) return
 
             let isRowSelected = false
 
-            const selectedRowIdx = this.acctPosList.findIndex(accPos => accPos.id === value.id)
+            const selectedRowIdx = this.acctListByOpEntry.findIndex(accPos => accPos.id === value.id)
             isRowSelected = this.$refs.AcctPosTable.isRowSelected(selectedRowIdx)
 
             let counter = 0

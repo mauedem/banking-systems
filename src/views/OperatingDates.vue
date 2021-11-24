@@ -195,9 +195,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.opdate-table, .opentry-table {
-    height: 80vh !important;
-}
-</style>

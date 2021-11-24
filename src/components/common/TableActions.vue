@@ -5,6 +5,7 @@
             class="d-flex mt-3"
         >
             <b-button
+                v-if="!hideAddBtn"
                 variant="outline-success"
                 size="sm"
                 @click="addAcctPosRow"
@@ -23,6 +24,7 @@
                 </b-button>
 
                 <b-button
+                    v-if="!hideDeleteBtn"
                     class="ml-3"
                     variant="outline-danger"
                     size="sm"
@@ -66,6 +68,16 @@ export default {
         selectedRow: {
             type: Object,
             default: null
+        },
+
+        hideAddBtn: {
+            type: Boolean,
+            default: false
+        },
+
+        hideDeleteBtn: {
+            type: Boolean,
+            default: false
         }
     },
 
